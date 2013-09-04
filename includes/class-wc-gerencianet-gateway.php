@@ -188,15 +188,17 @@ class WC_GerenciaNet_Gateway extends WC_Payment_Gateway {
                 'clientes' => array(
                     'cliente' => array(
                         'nomeRazaoSocial' => $order->billing_first_name . ' ' . $order->billing_last_name,
-                        'email'           => $order->billing_email,
-                        // 'cpfcnpj'         => '',
-                        'cep'             => str_replace( array( '-', ' ' ), '', $order->billing_postcode ),
-                        'rua'             => $order->billing_address_1,
-                        // 'numero'          => '',
-                        // 'bairro'          => '',
-                        'complemento'     => $order->billing_address_2,
-                        'estado'          => $order->billing_state,
-                        'cidade'          => $order->billing_city
+                        'opcionais'       => array(
+                            'email'       => $order->billing_email,
+                            // 'cpfcnpj'     => '',
+                            'cep'         => str_replace( array( '-', ' ' ), '', $order->billing_postcode ),
+                            'rua'         => $order->billing_address_1,
+                            // 'numero'      => '',
+                            // 'bairro'      => '',
+                            'complemento' => $order->billing_address_2,
+                            'estado'      => $order->billing_state,
+                            'cidade'      => $order->billing_city
+                        )
                     )
                 ),
                 'retorno'  => $this->invoice_prefix . $order->id,
