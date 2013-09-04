@@ -1,37 +1,39 @@
 <?php
-
-/*
-Plugin Name: WooCommerce Gerêncianet Gateway
-Plugin URI: 
-Description: Pagamento via Gerêncianet
-Version: 0.1
-Author: Pedro Igor
-Author URI: 
-*/
+/**
+ * Plugin Name: WooCommerce Gerêncianet Gateway
+ * Plugin URI: https://github.com/pedroigor91/Woocommerce-Gerencianet
+ * Description: Gateway de pagamento Gerêncianet para WooCommerce.
+ * Author: Pedro Igor, claudiosanches
+ * Author URI: http://manp.com.br/
+ * Version: 0.0.1
+ * License: GPLv2 or later
+ * Text Domain: wcgerencianet
+ * Domain Path: /languages/
+ */
 
 add_action('plugins_loaded', 'woocommerce_gerencianet_init', 0);
 function woocommerce_gerencianet_init(){
   if(!class_exists('WC_Payment_Gateway')) return;
- 
+
   class WC_GerenciaNet extends WC_Payment_Gateway{
     public function __construct(){
       $this -> id = 'gerencianet';
       $this -> medthod_title = 'GerenciaNET';
       $this -> has_fields = false;
- 
+
       $this -> init_form_fields();
       $this -> init_settings();
- 
+
       $this -> title = $this -> settings['title'];
       $this -> description = $this -> settings['description'];
       $this -> vendedor_id = $this -> settings['vendedor_id'];
       $this -> token = $this -> settings['token'];
       $this -> redirect_page_id = $this -> settings['redirect_page_id'];
       $this -> liveurl = 'https://integracao.gerencianet.com.br/xml/cobrancaonline/emite/html';
- 
+
       $this -> msg['message'] = "";
       $this -> msg['class'] = "";
- 
+
       add_action('init', array(&$this, 'check_gerencianet_response'));
       if ( version_compare( WOOCOMMERCE_VERSION, '2.0.0', '>=' ) ) {
                 add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( &$this, 'process_admin_options' ) );
@@ -41,7 +43,7 @@ function woocommerce_gerencianet_init(){
       add_action('woocommerce_receipt_gerencianet', array(&$this, 'receipt_page'));
    }
     function init_form_fields(){
- 
+
        $this -> form_fields = array(
                 'enabled' => array(
                     'title' => __('Habilitar/Desabilitar', 'gerencianet'),
@@ -58,7 +60,7 @@ function woocommerce_gerencianet_init(){
                     'type' => 'textarea',
                     'description' => __('Isto controla a descri&ccedil;&atilde;o que o usu&aacute;rio v&ecirc; durante o checkout.', 'gerencianet'),
                     //'default' => __('', 'gerencianet)
-					),
+                    ),
                 'merchant_id' => array(
                     'title' => __('ID do Usu&aacute;rio', 'mrova'),
                     'type' => 'text',
@@ -76,7 +78,7 @@ function woocommerce_gerencianet_init(){
                 )
             );
     }
- 
+
        public function admin_options(){
         echo '<h3>'.__('Ger&ecirc;nciaNet Gateway para Woocommerce', 'mrova').'</h3>';
         echo '<p>'.__('Um dos mais completos do Brasil.').'</p>';
@@ -84,9 +86,9 @@ function woocommerce_gerencianet_init(){
         // Generate the HTML For the settings form.
         $this -> generate_settings_html();
         echo '</table>';
- 
+
     }
- 
+
     /**
      *  There are no payment fields for gerencianet, but we want to show the description if set.
      **/
@@ -104,19 +106,19 @@ function woocommerce_gerencianet_init(){
      * Generate gerencianet button link
      **/
     public function generate_gerencianet_form($order_id){
- 
+
         global $woocommerce;
- 
+
         $order = new WC_Order($order_id);
         $txnid = $order_id.'_'.date("ymds");
- 
+
         $redirect_url = ($this -> redirect_page_id=="" || $this -> redirect_page_id==0)?get_site_url() . "/":get_permalink($this -> redirect_page_id);
- 
+
         $productinfo = "Pedido $order_id";
- 
+
         $str = "$this->vendedor_id|$txnid|$order->order_total|$productinfo|$order->billing_first_name|$order->billing_email|||||||||||$this->salt";
         $hash = hash('sha512', $str);
- 
+
         $gerencianet_args = array(
           'key' => $this -> vendedor_id,
           'txnid' => $txnid,
@@ -138,7 +140,7 @@ function woocommerce_gerencianet_init(){
           'hash' => $hash,
           'pg' => 'NB'
           );
- 
+
         $gerencianet_args_array = array();
         foreach($gerencianet_args as $key => $value){
           $gerencianet_args_array[] = "<input type='hidden' name='$key' value='$value'/>";
@@ -168,8 +170,8 @@ jQuery("body").block(
     });
     jQuery("#submit_gerencianet_payment_form").click();});</script>
             </form>';
- 
- 
+
+
     }
     /**
      * Process the payment and return the result
@@ -180,7 +182,7 @@ jQuery("body").block(
             $order->id, add_query_arg('key', $order->order_key, get_permalink(get_option('woocommerce_pay_page_id'))))
         );
     }
- 
+
     /**
      * Check for valid gerencianet server callback
      **/
@@ -196,7 +198,7 @@ jQuery("body").block(
                     $merchant_id = $_REQUEST['key'];
                     $amount = $_REQUEST['Amount'];
                     $hash = $_REQUEST['hash'];
- 
+
                     $status = $_REQUEST['status'];
                     $productinfo = "Pedido $order_id";
                     echo $hash;
@@ -206,15 +208,15 @@ jQuery("body").block(
                     if($order -> status !=='completed'){
                         if($hash == $checkhash)
                         {
- 
+
                           $status = strtolower($status);
- 
+
                             if($status=="success"){
                                 $transauthorised = true;
                                 $this -> msg['message'] = "Thank you for shopping with us. Your account has been charged and your transaction is successful. We will be shipping your order to you soon.";
                                 $this -> msg['class'] = 'woocommerce_message';
                                 if($order -> status == 'processing'){
- 
+
                                 }else{
                                     $order -> payment_complete();
                                     $order -> add_order_note('GerenciaNet payment successful<br/>Unnique Id from GerenciaNet: '.$_REQUEST['mihpayid']);
@@ -240,7 +242,7 @@ jQuery("body").block(
                         }else{
                             $this -> msg['class'] = 'error';
                             $this -> msg['message'] = "Security Error. Illegal access detected";
- 
+
                             //Here you need to simply ignore this and dont need
                             //to perform any operation in this condition
                         }
@@ -254,15 +256,15 @@ jQuery("body").block(
                         // $errorOccurred = true;
                         $msg = "Error";
                     }
- 
+
             }
- 
- 
- 
+
+
+
         }
- 
+
     }
- 
+
     function showMessage($content){
             return '<div class="box '.$this -> msg['class'].'-box">'.$this -> msg['message'].'</div>'.$content;
         }
@@ -295,7 +297,7 @@ jQuery("body").block(
         $methods[] = 'WC_GerenciaNet';
         return $methods;
     }
- 
+
     add_filter('woocommerce_payment_gateways', 'woocommerce_add_gerencianet_gateway' );
 }
 
