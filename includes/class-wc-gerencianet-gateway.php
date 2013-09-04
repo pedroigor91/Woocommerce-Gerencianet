@@ -23,7 +23,7 @@ class WC_GerenciaNet_Gateway extends WC_Payment_Gateway {
 
         // API URLs.
         $this->prod_boleto = 'https://integracao.gerencianet.com.br/json/boleto/emite/json';
-        $this->dev_boleto  = 'https://testeintegracao.gerencianet.com.br/json/boleto/emite/xml';
+        $this->dev_boleto  = 'https://testeintegracao.gerencianet.com.br/json/boleto/emite/json';
 
         // Load the form fields.
         $this->init_form_fields();
@@ -249,7 +249,7 @@ class WC_GerenciaNet_Gateway extends WC_Payment_Gateway {
 
         // Sets the post params.
         $params = array(
-            'body'      => $json,
+            'body'      => array( 'entrada' => $json ),
             'sslverify' => false,
             'timeout'   => 60,
             // 'headers'   => array(
