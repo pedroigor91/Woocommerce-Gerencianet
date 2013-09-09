@@ -183,8 +183,8 @@ class WC_GerenciaNet_Gateway extends WC_Payment_Gateway {
      * @return string        Payment xml.
      */
     protected function generate_payment_xml( $order ) {
-        // Include the WC_PagSeguro_SimpleXML class.
-        require_once WOO_PAGSEGURO_PATH . 'includes/class-wc-gerencianet-simplexml.php';
+        // Include the WC_GerenciaNet_SimpleXML class.
+        require_once WOO_GERENCIANET_PATH . 'includes/class-wc-gerencianet-simplexml.php';
 
         $xml = new WC_GerenciaNet_SimpleXML( '<?xml version="1.0" encoding="utf-8"  ?><boleto></boleto>' );
 
