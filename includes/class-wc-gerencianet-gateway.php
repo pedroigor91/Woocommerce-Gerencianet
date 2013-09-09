@@ -207,7 +207,7 @@ class WC_GerenciaNet_Gateway extends WC_Payment_Gateway {
         // TODO: precisa melhorar isso para aceitar taxas e descontos.
         if ( sizeof( $order->get_items() ) > 0 ) {
 
-            $node_items = $xml->addChild('itens');
+            $node_items = $xml->addChild( 'itens' );
 
             foreach ( $order->get_items() as $order_item ) {
                 if ( $order_item['qty'] ) {
@@ -282,7 +282,7 @@ class WC_GerenciaNet_Gateway extends WC_Payment_Gateway {
 
             // TODO: Tratar erros
             // TODO: Este codigo abaixo nao funciona para o ambiente de teste, o ambiente de teste nao retorna link na resposta
-            if ($response_data->statusCod == 2) {
+            if ( 2 == $response_data->statusCod ) {
                 $link = $response_data->resposta->cobrancasGeradas->cliente->cobranca->link;
                 return $link;
             } else {
@@ -291,7 +291,7 @@ class WC_GerenciaNet_Gateway extends WC_Payment_Gateway {
                 /**
                  * Cobranca ja foi gerada anteriormente
                  */
-                if ($statusErro == 1012) {
+                if ( 1012 == $statusErro ) {
                     $link = (string) $response_data->resposta->erro->entrada->emitirCobranca->resposta->cobrancasGeradas->cliente->cobranca->link;
                     return $link;
                 }
@@ -299,7 +299,7 @@ class WC_GerenciaNet_Gateway extends WC_Payment_Gateway {
                 /**
                  * Retorno ja utilizado anteriormente
                  */
-                if ($statusErro == 195) {
+                if ( 195 == $statusErro ) {
                     $link = (string) $response_data->resposta->erro->entrada;
                     return $link;
                 }
