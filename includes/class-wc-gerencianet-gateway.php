@@ -22,8 +22,8 @@ class WC_GerenciaNet_Gateway extends WC_Payment_Gateway {
         $this->method_title   = __( 'Ger&ecirc;nciaNet', 'wcgerencianet' );
 
         // API URLs.
-        $this->prod_boleto = 'https://integracao.gerencianet.com.br/json/boleto/emite/json';
-        $this->dev_boleto  = 'https://testeintegracao.gerencianet.com.br/json/boleto/emite/json';
+        $this->prod_boleto = 'https://integracao.gerencianet.com.br/xml/boleto/emite/xml';
+        $this->dev_boleto  = 'https://testeintegracao.gerencianet.com.br/xml/boleto/emite/xml';
 
         // Load the form fields.
         $this->init_form_fields();
@@ -104,6 +104,7 @@ class WC_GerenciaNet_Gateway extends WC_Payment_Gateway {
                 'type' => 'text',
                 'description' => __( 'This controls the title which the user sees during checkout.', 'wcgerencianet' ),
                 'desc_tip' => true,
+
                 'default' => __( 'Ger&ecirc;nciaNet', 'wcgerencianet' )
             ),
             'description' => array(
@@ -175,39 +176,40 @@ class WC_GerenciaNet_Gateway extends WC_Payment_Gateway {
     }
 
     /**
-     * Generate the payment json.
+     * Generate the payment xml.
      *
      * @param object  $order Order data.
      *
-     * @return string        Payment json.
+     * @return string        Payment xml.
      */
-    protected function generate_payment_json( $order ) {
-        $json = array(
-            'boleto' => array(
-                'token'    => $this->token,
-                'clientes' => array(
-                    'cliente' => array(
-                        'nomeRazaoSocial' => $order->billing_first_name . ' ' . $order->billing_last_name,
-                        'opcionais'       => array(
-                            'email'       => $order->billing_email,
-                            // 'cpfcnpj'     => '',
-                            'cep'         => str_replace( array( '-', ' ' ), '', $order->billing_postcode ),
-                            'rua'         => $order->billing_address_1,
-                            // 'numero'      => '',
-                            // 'bairro'      => '',
-                            'complemento' => $order->billing_address_2,
-                            'estado'      => $order->billing_state,
-                            'cidade'      => $order->billing_city,
-                            'retorno'  => $this->invoice_prefix . $order->id
-                        )
-                    )
-                ),
-            )
-        );
+    protected function generate_payment_xml( $order ) {
+        $xml = new SimpleXMLElement( '<?xml version="1.0" encoding="utf-8"  ?><boleto></boleto>' );
+
+        $xml->addChild( 'token', $this->token );
+        $node_clientes = $xml->addChild( 'clientes' );
+        $node_cliente = $node_clientes->addChild( 'cliente' );
+
+        $nome_razao_social = $order->billing_first_name . ' ' . $order->billing_last_name;
+        $cep = str_replace( array( '-', ' ' ), '', $order->billing_postcode );
+        $retorno = 'woocommerce_' . $order->id;
+
+        $node_cliente->addChild( 'nomeRazaoSocial', $nome_razao_social  );
+        $node_opcionais_cliente = $node_cliente->addChild( 'opcionais' );
+
+        $node_opcionais_cliente->addChild( 'email', $order->billing_email );
+        $node_opcionais_cliente->addChild( 'cep', $cep );
+        $node_opcionais_cliente->addChild( 'rua', $order->billing_address_1 );
+        $node_opcionais_cliente->addChild( 'complemento', $order->billing_address_2 );
+        $node_opcionais_cliente->addChild( 'estado', $order->billing_state );
+        $node_opcionais_cliente->addChild( 'cidade', $order->billing_city );
+        $node_opcionais_cliente->addChild( 'retorno', $retorno );
 
         // Cart Contents.
         // TODO: precisa melhorar isso para aceitar taxas e descontos.
         if ( sizeof( $order->get_items() ) > 0 ) {
+
+            $node_itens = $xml->addChild('itens');
+
             foreach ( $order->get_items() as $order_item ) {
                 if ( $order_item['qty'] ) {
                     $item_name = $order_item['name'];
@@ -216,19 +218,21 @@ class WC_GerenciaNet_Gateway extends WC_Payment_Gateway {
                     if ( $meta = $item_meta->display( true, true ) )
                         $item_name .= ' - ' . $meta;
 
-                    $json['boleto']['itens']['item'] = array(
-                        'descricao' => substr( sanitize_text_field( $item_name ), 0, 95 ),
-                        'valor'     => $this->format_money( $order->get_item_total( $order_item, false ) ),
-                        'qtde'      => $order_item['qty'],
-                    );
+                    $node_item = $node_itens->addChild( 'item' );
+                    $descricao = substr( sanitize_text_field( $item_name ), 0, 95 );
+                    $valor = $this->format_money( $order->get_item_total( $order_item, false ) );
+
+                    $node_item->addChild( 'descricao', $descricao );
+                    $node_item->addChild( 'valor', $valor );
+                    $node_item->addChild( 'qtde', $order_item['qty'] );
                 }
             }
         }
 
         // Filter the payment data.
-        $json = apply_filters( 'woocommerce_gerencianet_payment_json', $json, $order );
+        $xml = apply_filters( 'woocommerce_gerencianet_payment_xml', $xml, $order );
 
-        return json_encode( $json );
+        return $xml->asXML();
     }
 
     /**
@@ -242,18 +246,16 @@ class WC_GerenciaNet_Gateway extends WC_Payment_Gateway {
         global $woocommerce;
 
         // Sets the xml.
-        $json = $this->generate_payment_json( $order );
+        $xml = $this->generate_payment_xml( $order );
+
         if ( 'yes' == $this->debug )
-            $this->log->add( 'gerencianet', 'Requesting token for order ' . $order->get_order_number() . ' with the following data: ' . $json );
+            $this->log->add( 'gerencianet', 'Requesting token for order ' . $order->get_order_number() . ' with the following data: ' . $xml );
 
         // Sets the post params.
         $params = array(
-            'body'      => array( 'entrada' => $json ),
+            'body'      => array( 'entrada' => $xml ),
             'sslverify' => false,
-            'timeout'   => 60,
-            // 'headers'   => array(
-            //     'Content-Type' => 'application/json;charset=UTF-8',
-            // )
+            'timeout'   => 60
         );
 
         // Sets the payment url.
@@ -272,13 +274,39 @@ class WC_GerenciaNet_Gateway extends WC_Payment_Gateway {
             if ( 'yes' == $this->debug )
                 $this->log->add( 'gerencianet', 'Ger&ecirc;nciaNet payment response: ' . print_r( $response, true ) );
 
-            // TODO: Testar e retornar aqui a URL de pagamento.
-            // if ( isset( $body->code ) ) {
-            //     if ( 'yes' == $this->debug )
-            //         $this->log->add( 'gerencianet', 'Ger&ecirc;nciaNet Payment Token created with success! The Token is: ' . $body->code );
 
-            //     return (string) $body->code;
-            // }
+            $xml_resposta = $response['body'];
+            $obj_xml_resposta = simplexml_load_string($xml_resposta);
+
+            /**
+             * StatusCod 2 - Emissao ocorreu com sucesso
+             * StatusCod 1 - Emissao teve erro
+             */
+
+            // TODO: Tratar erros
+            // TODO: Este codigo abaixo nao funciona para o ambiente de teste, o ambiente de teste nao retorna link na resposta
+            if ($obj_xml_resposta->statusCod == 2) {
+                $link = $obj_xml_resposta->resposta->cobrancasGeradas->cliente->cobranca->link;
+                return $link;
+            } else {
+                $statusErro = $obj_xml_resposta->resposta->erro->status;
+
+                /**
+                 * Cobranca ja foi gerada anteriormente
+                 */
+                if ($statusErro == 1012) {
+                    $link = (string)$obj_xml_resposta->resposta->erro->entrada->emitirCobranca->resposta->cobrancasGeradas->cliente->cobranca->link;
+                    return $link;
+                }
+
+                /**
+                 * Retorno ja utilizado anteriormente
+                 */
+                if ($statusErro == 195) {
+                    $link = (string)$obj_xml_resposta->resposta->erro->entrada;
+                    return $link;
+                }
+            }
         }
 
         // Added error message.
