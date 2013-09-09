@@ -189,29 +189,25 @@ class WC_GerenciaNet_Gateway extends WC_Payment_Gateway {
         $xml = new WC_GerenciaNet_SimpleXML( '<?xml version="1.0" encoding="utf-8"  ?><boleto></boleto>' );
 
         $xml->addChild( 'token', $this->token );
-        $node_clientes = $xml->addChild( 'clientes' );
-        $node_cliente = $node_clientes->addChild( 'cliente' );
+        $node_clients = $xml->addChild( 'clientes' );
+        $node_client = $node_clients->addChild( 'cliente' );
 
-        $nome_razao_social = $order->billing_first_name . ' ' . $order->billing_last_name;
-        $cep = str_replace( array( '-', ' ' ), '', $order->billing_postcode );
-        $retorno = $this->invoice_prefix . $order->id;
+        $node_client->addChild( 'nomeRazaoSocial' )->addCData( $order->billing_first_name . ' ' . $order->billing_last_name );
+        $node_client_options = $node_client->addChild( 'opcionais' );
 
-        $node_cliente->addChild( 'nomeRazaoSocial' )->addCData( $nome_razao_social );
-        $node_opcionais_cliente = $node_cliente->addChild( 'opcionais' );
-
-        $node_opcionais_cliente->addChild( 'email', $order->billing_email );
-        $node_opcionais_cliente->addChild( 'cep', $cep );
-        $node_opcionais_cliente->addChild( 'rua' )->addCData( $order->billing_address_1 );
-        $node_opcionais_cliente->addChild( 'complemento' )->addCData( $order->billing_address_2 );
-        $node_opcionais_cliente->addChild( 'estado', $order->billing_state );
-        $node_opcionais_cliente->addChild( 'cidade' )->addCData( $order->billing_city );
-        $node_opcionais_cliente->addChild( 'retorno', $retorno );
+        $node_client_options->addChild( 'email', $order->billing_email );
+        $node_client_options->addChild( 'cep', str_replace( array( '-', ' ' ), '', $order->billing_postcode ) );
+        $node_client_options->addChild( 'rua' )->addCData( $order->billing_address_1 );
+        $node_client_options->addChild( 'complemento' )->addCData( $order->billing_address_2 );
+        $node_client_options->addChild( 'estado', $order->billing_state );
+        $node_client_options->addChild( 'cidade' )->addCData( $order->billing_city );
+        $node_client_options->addChild( 'retorno', $this->invoice_prefix . $order->id );
 
         // Cart Contents.
         // TODO: precisa melhorar isso para aceitar taxas e descontos.
         if ( sizeof( $order->get_items() ) > 0 ) {
 
-            $node_itens = $xml->addChild('itens');
+            $node_items = $xml->addChild('itens');
 
             foreach ( $order->get_items() as $order_item ) {
                 if ( $order_item['qty'] ) {
@@ -221,12 +217,12 @@ class WC_GerenciaNet_Gateway extends WC_Payment_Gateway {
                     if ( $meta = $item_meta->display( true, true ) )
                         $item_name .= ' - ' . $meta;
 
-                    $node_item = $node_itens->addChild( 'item' );
-                    $descricao = substr( sanitize_text_field( $item_name ), 0, 95 );
-                    $valor = $this->format_money( $order->get_item_total( $order_item, false ) );
+                    $node_item = $node_items->addChild( 'item' );
+                    $item_name = substr( sanitize_text_field( $item_name ), 0, 95 );
+                    $item_value = $this->format_money( $order->get_item_total( $order_item, false ) );
 
-                    $node_item->addChild( 'descricao' )->addCData( $descricao );
-                    $node_item->addChild( 'valor', $valor );
+                    $node_item->addChild( 'descricao' )->addCData( $item_name );
+                    $node_item->addChild( 'valor', $item_value );
                     $node_item->addChild( 'qtde', $order_item['qty'] );
                 }
             }
