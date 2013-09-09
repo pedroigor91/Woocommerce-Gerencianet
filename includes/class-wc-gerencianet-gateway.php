@@ -1,6 +1,6 @@
 <?php
 /**
- * WC WC_GerenciaNet_Gateway Gateway Class.
+ * WC_GerenciaNet_Gateway Gateway Class.
  *
  * Built the GerenciaNet method.
  *
@@ -183,7 +183,10 @@ class WC_GerenciaNet_Gateway extends WC_Payment_Gateway {
      * @return string        Payment xml.
      */
     protected function generate_payment_xml( $order ) {
-        $xml = new SimpleXMLElement( '<?xml version="1.0" encoding="utf-8"  ?><boleto></boleto>' );
+        // Include the WC_PagSeguro_SimpleXML class.
+        require_once WOO_PAGSEGURO_PATH . 'includes/class-wc-gerencianet-simplexml.php';
+
+        $xml = new WC_GerenciaNet_SimpleXML( '<?xml version="1.0" encoding="utf-8"  ?><boleto></boleto>' );
 
         $xml->addChild( 'token', $this->token );
         $node_clientes = $xml->addChild( 'clientes' );
@@ -191,17 +194,17 @@ class WC_GerenciaNet_Gateway extends WC_Payment_Gateway {
 
         $nome_razao_social = $order->billing_first_name . ' ' . $order->billing_last_name;
         $cep = str_replace( array( '-', ' ' ), '', $order->billing_postcode );
-        $retorno = 'woocommerce_' . $order->id;
+        $retorno = $this->invoice_prefix . $order->id;
 
-        $node_cliente->addChild( 'nomeRazaoSocial', $nome_razao_social  );
+        $node_cliente->addChild( 'nomeRazaoSocial' )->addCData( $nome_razao_social );
         $node_opcionais_cliente = $node_cliente->addChild( 'opcionais' );
 
         $node_opcionais_cliente->addChild( 'email', $order->billing_email );
         $node_opcionais_cliente->addChild( 'cep', $cep );
-        $node_opcionais_cliente->addChild( 'rua', $order->billing_address_1 );
-        $node_opcionais_cliente->addChild( 'complemento', $order->billing_address_2 );
+        $node_opcionais_cliente->addChild( 'rua' )->addCData( $order->billing_address_1 );
+        $node_opcionais_cliente->addChild( 'complemento' )->addCData( $order->billing_address_2 );
         $node_opcionais_cliente->addChild( 'estado', $order->billing_state );
-        $node_opcionais_cliente->addChild( 'cidade', $order->billing_city );
+        $node_opcionais_cliente->addChild( 'cidade' )->addCData( $order->billing_city );
         $node_opcionais_cliente->addChild( 'retorno', $retorno );
 
         // Cart Contents.
@@ -222,7 +225,7 @@ class WC_GerenciaNet_Gateway extends WC_Payment_Gateway {
                     $descricao = substr( sanitize_text_field( $item_name ), 0, 95 );
                     $valor = $this->format_money( $order->get_item_total( $order_item, false ) );
 
-                    $node_item->addChild( 'descricao', $descricao );
+                    $node_item->addChild( 'descricao' )->addCData( $descricao );
                     $node_item->addChild( 'valor', $valor );
                     $node_item->addChild( 'qtde', $order_item['qty'] );
                 }
