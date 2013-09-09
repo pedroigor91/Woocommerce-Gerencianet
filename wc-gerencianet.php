@@ -3,8 +3,8 @@
  * Plugin Name: WooCommerce GerênciaNet Gateway
  * Plugin URI: https://github.com/pedroigor91/Woocommerce-Gerencianet
  * Description: Gateway de pagamento Gerêncianet para WooCommerce.
- * Author: Pedro Igor, claudiosanches
- * Author URI: http://manp.com.br/
+ * Author: Pedro Igor, Claudio Sanches, Alessandro
+ * Author URI: https://github.com/pedroigor91/Woocommerce-Gerencianet/
  * Version: 0.0.1
  * License: GPLv2 or later
  * Text Domain: wcgerencianet
