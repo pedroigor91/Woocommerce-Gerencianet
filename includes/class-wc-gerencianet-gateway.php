@@ -273,9 +273,7 @@ class WC_GerenciaNet_Gateway extends WC_Payment_Gateway {
             if ( 'yes' == $this->debug )
                 $this->log->add( 'gerencianet', 'Ger&ecirc;nciaNet payment response: ' . print_r( $response, true ) );
 
-
-            $xml_resposta = $response['body'];
-            $obj_xml_resposta = simplexml_load_string($xml_resposta);
+            $response_data = new SimpleXmlElement( $response['body'], LIBXML_NOCDATA );
 
             /**
              * StatusCod 2 - Emissao ocorreu com sucesso
@@ -284,17 +282,17 @@ class WC_GerenciaNet_Gateway extends WC_Payment_Gateway {
 
             // TODO: Tratar erros
             // TODO: Este codigo abaixo nao funciona para o ambiente de teste, o ambiente de teste nao retorna link na resposta
-            if ($obj_xml_resposta->statusCod == 2) {
-                $link = $obj_xml_resposta->resposta->cobrancasGeradas->cliente->cobranca->link;
+            if ($response_data->statusCod == 2) {
+                $link = $response_data->resposta->cobrancasGeradas->cliente->cobranca->link;
                 return $link;
             } else {
-                $statusErro = $obj_xml_resposta->resposta->erro->status;
+                $statusErro = $response_data->resposta->erro->status;
 
                 /**
                  * Cobranca ja foi gerada anteriormente
                  */
                 if ($statusErro == 1012) {
-                    $link = (string)$obj_xml_resposta->resposta->erro->entrada->emitirCobranca->resposta->cobrancasGeradas->cliente->cobranca->link;
+                    $link = (string) $response_data->resposta->erro->entrada->emitirCobranca->resposta->cobrancasGeradas->cliente->cobranca->link;
                     return $link;
                 }
 
@@ -302,7 +300,7 @@ class WC_GerenciaNet_Gateway extends WC_Payment_Gateway {
                  * Retorno ja utilizado anteriormente
                  */
                 if ($statusErro == 195) {
-                    $link = (string)$obj_xml_resposta->resposta->erro->entrada;
+                    $link = (string) $response_data->resposta->erro->entrada;
                     return $link;
                 }
             }
