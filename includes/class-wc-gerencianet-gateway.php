@@ -254,7 +254,10 @@ class WC_GerenciaNet_Gateway extends WC_Payment_Gateway {
         $params = array(
             'body'      => array( 'entrada' => $xml ),
             'sslverify' => false,
-            'timeout'   => 60
+            'timeout'   => 60,
+            'headers'   => array(
+                'Content-Type' => 'application/xml;charset=UTF-8',
+            )
         );
 
         // Sets the payment url.
