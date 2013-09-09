@@ -197,11 +197,11 @@ class WC_GerenciaNet_Gateway extends WC_Payment_Gateway {
                             // 'bairro'      => '',
                             'complemento' => $order->billing_address_2,
                             'estado'      => $order->billing_state,
-                            'cidade'      => $order->billing_city
+                            'cidade'      => $order->billing_city,
+                            'retorno'  => $this->invoice_prefix . $order->id
                         )
                     )
                 ),
-                'retorno'  => $this->invoice_prefix . $order->id,
             )
         );
 
@@ -243,7 +243,6 @@ class WC_GerenciaNet_Gateway extends WC_Payment_Gateway {
 
         // Sets the xml.
         $json = $this->generate_payment_json( $order );
-
         if ( 'yes' == $this->debug )
             $this->log->add( 'gerencianet', 'Requesting token for order ' . $order->get_order_number() . ' with the following data: ' . $json );
 
@@ -258,7 +257,7 @@ class WC_GerenciaNet_Gateway extends WC_Payment_Gateway {
         );
 
         // Sets the payment url.
-        if ( true == $this->sandbox )
+        if ( 'yes' == $this->sandbox )
             $url = $this->dev_boleto;
         else
             $url = $this->prod_boleto;
