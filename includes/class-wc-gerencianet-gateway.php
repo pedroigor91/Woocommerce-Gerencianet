@@ -24,6 +24,8 @@ class WC_GerenciaNet_Gateway extends WC_Payment_Gateway {
         // API URLs.
         $this->prod_boleto = 'https://integracao.gerencianet.com.br/xml/boleto/emite/xml';
         $this->dev_boleto  = 'https://testeintegracao.gerencianet.com.br/xml/boleto/emite/xml';
+        $this->prod_cobranca = 'https://integracao.gerencianet.com.br/xml/cobrancaonline/emite/xml';
+        $this->dev_cobranca = 'https://testeintegracao.gerencianet.com.br/xml/cobrancaonline/emite/xml';
 
         // Load the form fields.
         $this->init_form_fields();
