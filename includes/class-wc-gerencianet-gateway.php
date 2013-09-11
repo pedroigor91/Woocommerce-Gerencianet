@@ -194,6 +194,7 @@ class WC_GerenciaNet_Gateway extends WC_Payment_Gateway {
 
         $node_client->addChild( 'nomeRazaoSocial' )->addCData( $order->billing_first_name . ' ' . $order->billing_last_name );
         $node_client_options = $node_client->addChild( 'opcionais' );
+        $return = 'woocommerce_' . $order->id;
 
         $node_client_options->addChild( 'email', $order->billing_email );
         $node_client_options->addChild( 'cep', str_replace( array( '-', ' ' ), '', $order->billing_postcode ) );
@@ -201,7 +202,7 @@ class WC_GerenciaNet_Gateway extends WC_Payment_Gateway {
         $node_client_options->addChild( 'complemento' )->addCData( $order->billing_address_2 );
         $node_client_options->addChild( 'estado', $order->billing_state );
         $node_client_options->addChild( 'cidade' )->addCData( $order->billing_city );
-        $node_client_options->addChild( 'retorno', $this->invoice_prefix . $order->id );
+        $node_client_options->addChild( 'retorno', $return );
 
         // Cart Contents.
         // TODO: precisa melhorar isso para aceitar taxas e descontos.
