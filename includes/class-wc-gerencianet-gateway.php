@@ -199,15 +199,63 @@ class WC_GerenciaNet_Gateway extends WC_Payment_Gateway {
         $return = 'woocommerce_' . $order->id;
 
         $node_client_options->addChild( 'email', $order->billing_email );
-        $node_client_options->addChild( 'cep', str_replace( array( '-', ' ' ), '', $order->billing_postcode ) );
-        $node_client_options->addChild( 'rua' )->addCData( $order->billing_address_1 );
-        $node_client_options->addChild( 'complemento' )->addCData( $order->billing_address_2 );
-        $node_client_options->addChild( 'estado', $order->billing_state );
-        $node_client_options->addChild( 'cidade' )->addCData( $order->billing_city );
-        $node_client_options->addChild( 'retorno', $return );
+        //$node_client_options->addChild( 'cep', str_replace( array( '-', ' ' ), '', $order->billing_postcode ) );
+        //$node_client_options->addChild( 'rua' )->addCData( $order->billing_address_1 );
+        //$node_client_options->addChild( 'complemento' )->addCData( $order->billing_address_2 );
+        //$node_client_options->addChild( 'estado', $order->billing_state );
+        //$node_client_options->addChild( 'cidade' )->addCData( $order->billing_city );
+        //$node_client_options->addChild( 'retorno', $return );
 
-        // Cart Contents.
+        // Shipping info.
+        if ( isset( $order->billing_postcode ) && ! empty( $order->billing_postcode ) ) {
+            $shipping = $xml->addChild( 'shipping' );
+            $shipping->addChild( 'type', 3 );
+
+            // Address infor
+            $address = $shipping->addChild( 'address' );
+            $node_client_options->addChild( 'rua' )->addCData( $order->billing_address_1 );
+            // $address->addChild( 'number', '' );
+            if ( ! empty( $order->billing_address_2 ) )
+                $node_client_options->addChild( 'complemento' )->addCData( $order->billing_address_2 );
+            // $address->addChild( 'district' )->addCData( '' );
+            $node_client_options->addChild( 'cep', str_replace( array( '-', ' ' ), '', $order->billing_postcode ) );
+            $node_client_options->addChild( 'cidade' )->addCData( $order->billing_city );
+            $node_client_options->addChild( 'estado', $order->billing_state );
+            $address->addChild( 'pais', 'BRA' );
+        }
+
+        //Items.
+        $items = $xml->addChild( 'items' );
+
+        // If prices include tax or have order discounts, send the whole order as a single item.
+        if ( 'yes' == get_option( 'woocommerce_prices_include_tax' ) || $order->get_order_discount() > 0 ) {
+
+            // Discount.
+            if ( $order->get_order_discount() > 0 )
+                $xml->addChild( 'extraAmount', '-' . $order->get_order_discount() );
+
+            $item_names = array();
+
+            if ( sizeof( $order->get_items() ) > 0 ) {
+                foreach ( $order->get_items() as $order_item ) {
+                    if ( $order_item['qty'] )
+                        $item_names[] = $order_item['name'] . ' x ' . $order_item['qty'];
+                }
+            }
+
+            $item = $items->addChild( 'item' );
+            $item->addChild( 'id', 1 );
+            $item->addChild( 'descricao' )->addCData( substr( sprintf( __( 'Order %s', 'wcgerencianet' ), $order->get_order_number() ) . ' - ' . implode( ', ', $item_names ), 0, 95 ) );
+            $item->addChild( 'valor', number_format( $order->get_total() - $order->get_shipping() - $order->get_shipping_tax() + $order->get_order_discount(), 2, '.', '' ) );
+            $item->addChild( 'qtde', 1 );
+
+            if ( ( $order->get_shipping() + $order->get_shipping_tax() ) > 0 )
+                $shipping->addChild( 'cost', number_format( $order->get_shipping() + $order->get_shipping_tax(), 2, '.', '' ) );
+
+        } else {
+
         // TODO: precisa melhorar isso para aceitar taxas e descontos.
+        $item_loop = 0;
         if ( sizeof( $order->get_items() ) > 0 ) {
 
             $node_items = $xml->addChild( 'itens' );
@@ -224,11 +272,19 @@ class WC_GerenciaNet_Gateway extends WC_Payment_Gateway {
                     $item_name = substr( sanitize_text_field( $item_name ), 0, 95 );
                     $item_value = $this->format_money( $order->get_item_total( $order_item, false ) );
 
-                    $node_item->addChild( 'descricao' )->addCData( $item_name );
+                    $node_item->addChild( 'descricao' )->addCData( substr( sanitize_text_field( $item_name ), 0, 95 ) );
                     $node_item->addChild( 'valor', $item_value );
                     $node_item->addChild( 'qtde', $order_item['qty'] );
                 }
             }
+        }
+
+            // Shipping Cost item.
+            if ( $order->get_shipping() > 0 )
+                $shipping->addChild( 'cost', number_format( $order->get_shipping(), 2, '.', '' ) );
+
+            // Extras Amount.
+            $xml->addChild( 'extraAmount', $order->get_total_tax() );
         }
 
         // Filter the payment data.
