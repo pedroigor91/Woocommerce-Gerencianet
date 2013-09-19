@@ -204,7 +204,7 @@ class WC_GerenciaNet_Gateway extends WC_Payment_Gateway {
         //$node_client_options->addChild( 'complemento' )->addCData( $order->billing_address_2 );
         //$node_client_options->addChild( 'estado', $order->billing_state );
         //$node_client_options->addChild( 'cidade' )->addCData( $order->billing_city );
-        $node_client_options->addChild( 'retorno', $return );
+        //$node_client_options->addChild( 'retorno', $return );
 
         // Shipping info.
         if ( isset( $order->billing_postcode ) && ! empty( $order->billing_postcode ) ) {
