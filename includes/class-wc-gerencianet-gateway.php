@@ -211,7 +211,7 @@ class WC_GerenciaNet_Gateway extends WC_Payment_Gateway {
             $shipping = $xml->addChild( 'shipping' );
             $shipping->addChild( 'type', 3 );
 
-            // Address infor
+            // Address info
             $node_client_options->addChild( 'rua' )->addCData( $order->billing_address_1 );
             if ( ! empty( $order->billing_address_2 ) )
                 $node_client_options->addChild( 'complemento' )->addCData( $order->billing_address_2 );
