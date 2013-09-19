@@ -4,7 +4,7 @@
  *
  * Gerêncianet payment helpers.
  *
- * @since 0.1
+ * @since 0.0.1
  */
 class WC_Gerencianet_Helpers {
 
