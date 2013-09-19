@@ -212,16 +212,12 @@ class WC_GerenciaNet_Gateway extends WC_Payment_Gateway {
             $shipping->addChild( 'type', 3 );
 
             // Address infor
-            $address = $shipping->addChild( 'address' );
             $node_client_options->addChild( 'rua' )->addCData( $order->billing_address_1 );
-            // $address->addChild( 'number', '' );
             if ( ! empty( $order->billing_address_2 ) )
                 $node_client_options->addChild( 'complemento' )->addCData( $order->billing_address_2 );
-            // $address->addChild( 'district' )->addCData( '' );
             $node_client_options->addChild( 'cep', str_replace( array( '-', ' ' ), '', $order->billing_postcode ) );
             $node_client_options->addChild( 'cidade' )->addCData( $order->billing_city );
             $node_client_options->addChild( 'estado', $order->billing_state );
-            $address->addChild( 'pais', 'BRA' );
         }
 
         //Items.
