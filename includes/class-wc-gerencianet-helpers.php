@@ -42,9 +42,9 @@ class WC_Gerencianet_Helpers {
      * @return string        Method name.
      */
     public function payment_method( $value ) {
-        $credit_card = __( 'Credit Card', 'wcpagseguro' );
-        $billet = __( 'Billet', 'wcpagseguro' );
-        $online_debit = __( 'Online Debit', 'wcpagseguro' );
+        $credit_card = __( 'Credit Card', 'wcgerencianet' );
+        $billet = __( 'Billet', 'wcgerencianet' );
+        $online_debit = __( 'Online Debit', 'wcgerencianet' );
 
         switch ( $value ) {
             case 101:
