@@ -75,7 +75,7 @@ class WC_Gerencianet_Helpers {
                 $method = $credit_card . ' ' . 'JCB';
                 break;
             default:
-                $method = __( 'Unknown', 'wcpagseguro' );
+                $method = __( 'Unknown', 'wcgerencianet' );
                 break;
         }
 
