@@ -19,11 +19,9 @@ class WC_GerenciaNet_Gateway extends WC_Payment_Gateway {
         $this->id             = 'gerencianet';
         $this->icon           = apply_filters( 'woocommerce_gerencianet_icon', WOO_GERENCIANET_URL . 'images/gerencianet.png' );
         $this->has_fields     = false;
-        $this->method_title   = __( 'Ger&ecirc;nciaNet', 'wcgerencianet' );
+        $this->method_title   = __( 'Ger&ecirc;ncianet', 'wcgerencianet' );
 
         // API URLs.
-        $this->prod_boleto = 'https://integracao.gerencianet.com.br/xml/boleto/emite/xml';
-        $this->dev_boleto  = 'https://testeintegracao.gerencianet.com.br/xml/boleto/emite/xml';
         $this->prod_cobranca = 'https://integracao.gerencianet.com.br/xml/cobrancaonline/emite/xml';
         $this->dev_cobranca = 'https://testeintegracao.gerencianet.com.br/xml/cobrancaonline/emite/xml';
 
@@ -74,12 +72,12 @@ class WC_GerenciaNet_Gateway extends WC_Payment_Gateway {
      * Admin Panel Options.
      */
     public function admin_options() {
-        echo '<h3>' . __( 'Ger&ecirc;nciaNet standard', 'wcgerencianet' ) . '</h3>';
-        echo '<p>' . __( 'Ger&ecirc;nciaNet standard works by sending the user to Ger&ecirc;nciaNet to enter their payment information.', 'wcgerencianet' ) . '</p>';
+        echo '<h3>' . __( 'Ger&ecirc;ncianet standard', 'wcgerencianet' ) . '</h3>';
+        echo '<p>' . __( 'Ger&ecirc;ncianet standard works by sending the user to Ger&ecirc;ncianet to enter their payment information.', 'wcgerencianet' ) . '</p>';
 
         // Checks if is valid for use.
         if ( ! $this->is_valid_for_use() ) {
-            echo '<div class="inline error"><p><strong>' . __( 'Ger&ecirc;nciaNet Disabled', 'wcgerencianet' ) . '</strong>: ' . __( 'Works only with Brazilian Real.', 'wcgerencianet' ) . '</p></div>';
+            echo '<div class="inline error"><p><strong>' . __( 'Ger&ecirc;ncianet Disabled', 'wcgerencianet' ) . '</strong>: ' . __( 'Works only with Brazilian Real.', 'wcgerencianet' ) . '</p></div>';
         } else {
             // Generate the HTML For the settings form.
             echo '<table class="form-table">';
@@ -98,7 +96,7 @@ class WC_GerenciaNet_Gateway extends WC_Payment_Gateway {
             'enabled' => array(
                 'title' => __( 'Enable/Disable', 'wcgerencianet' ),
                 'type' => 'checkbox',
-                'label' => __( 'Enable Ger&ecirc;nciaNet standard', 'wcgerencianet' ),
+                'label' => __( 'Enable Ger&ecirc;ncianet standard', 'wcgerencianet' ),
                 'default' => 'yes'
             ),
             'title' => array(
@@ -107,24 +105,24 @@ class WC_GerenciaNet_Gateway extends WC_Payment_Gateway {
                 'description' => __( 'This controls the title which the user sees during checkout.', 'wcgerencianet' ),
                 'desc_tip' => true,
 
-                'default' => __( 'Ger&ecirc;nciaNet', 'wcgerencianet' )
+                'default' => __( 'Ger&ecirc;ncianet', 'wcgerencianet' )
             ),
             'description' => array(
                 'title' => __( 'Description', 'wcgerencianet' ),
                 'type' => 'textarea',
                 'description' => __( 'This controls the description which the user sees during checkout.', 'wcgerencianet' ),
-                'default' => __( 'Pay via Ger&ecirc;nciaNet', 'wcgerencianet' )
+                'default' => __( 'Pay via Ger&ecirc;ncianet', 'wcgerencianet' )
             ),
             'token' => array(
-                'title' => __( 'Ger&ecirc;nciaNet Token', 'wcgerencianet' ),
+                'title' => __( 'Ger&ecirc;ncianet Token', 'wcgerencianet' ),
                 'type' => 'text',
-                'description' => __( 'Please enter your Ger&ecirc;nciaNet token. This is needed to process the payment and notifications', 'wcgerencianet' ),
+                'description' => __( 'Please enter your Ger&ecirc;ncianet token. This is needed to process the payment and notifications', 'wcgerencianet' ),
                 'default' => ''
             ),
             'invoice_prefix' => array(
                 'title' => __( 'Invoice Prefix', 'wcgerencianet' ),
                 'type' => 'text',
-                'description' => __( 'Please enter a prefix for your invoice numbers. If you use your Ger&ecirc;nciaNet account for multiple stores ensure this prefix is unqiue as Ger&ecirc;nciaNet will not allow orders with the same invoice number.', 'wcgerencianet' ),
+                'description' => __( 'Please enter a prefix for your invoice numbers. If you use your Ger&ecirc;ncianet account for multiple stores ensure this prefix is unqiue as Ger&ecirc;ncianet will not allow orders with the same invoice number.', 'wcgerencianet' ),
                 'desc_tip' => true,
                 'default' => 'WC-'
             ),
@@ -134,18 +132,18 @@ class WC_GerenciaNet_Gateway extends WC_Payment_Gateway {
                 'description' => ''
             ),
             'sandbox' => array(
-                'title' => __( 'Ger&ecirc;nciaNet Sandbox', 'wcgerencianet' ),
+                'title' => __( 'Ger&ecirc;ncianet Sandbox', 'wcgerencianet' ),
                 'type' => 'checkbox',
-                'label' => __( 'Enable Ger&ecirc;nciaNet sandbox', 'wcgerencianet' ),
+                'label' => __( 'Enable Ger&ecirc;ncianet sandbox', 'wcgerencianet' ),
                 'default' => 'no',
-                'description' => __( 'Ger&ecirc;nciaNet sandbox can be used to test payments.', 'wcgerencianet' ),
+                'description' => __( 'Ger&ecirc;ncianet sandbox can be used to test payments.', 'wcgerencianet' ),
             ),
             'debug' => array(
                 'title' => __( 'Debug Log', 'wcgerencianet' ),
                 'type' => 'checkbox',
                 'label' => __( 'Enable logging', 'wcgerencianet' ),
                 'default' => 'no',
-                'description' => sprintf( __( 'Log Ger&ecirc;nciaNet events, such as API requests, inside %s', 'wcgerencianet' ), '<code>woocommerce/logs/gerencianet-' . sanitize_file_name( wp_hash( 'gerencianet' ) ) . '.txt</code>' )
+                'description' => sprintf( __( 'Log Ger&ecirc;ncianet events, such as API requests, inside %s', 'wcgerencianet' ), '<code>woocommerce/logs/gerencianet-' . sanitize_file_name( wp_hash( 'gerencianet' ) ) . '.txt</code>' )
             )
         );
     }
@@ -188,31 +186,30 @@ class WC_GerenciaNet_Gateway extends WC_Payment_Gateway {
         // Include the WC_GerenciaNet_SimpleXML class.
         require_once WOO_GERENCIANET_PATH . 'includes/class-wc-gerencianet-simplexml.php';
 
-        $xml = new WC_GerenciaNet_SimpleXML( '<?xml version="1.0" encoding="utf-8"  ?><boleto></boleto>' );
+        $xml = new WC_GerenciaNet_SimpleXML( '<?xml version="1.0" encoding="utf-8"  ?><cobrancaonline></cobrancaonline>' );
 
         $xml->addChild( 'token', $this->token );
         $node_clients = $xml->addChild( 'clientes' );
         $node_client = $node_clients->addChild( 'cliente' );
 
-        $node_client->addChild( 'nomeRazaoSocial', $order->billing_first_name . ' ' . $order->billing_last_name );
+        $node_client->addChild( 'email' )->addCData( $order->billing_email );
         $node_client_options = $node_client->addChild( 'opcionais' );
         $return = 'woocommerce_' . $order->id;
 
-        $node_client_options->addChild( 'email', $order->billing_email );
+        $node_client_options->addChild( 'nomeRazaoSocial' )->addCData( $order->billing_first_name . ' ' . $order->billing_last_name );
         $node_client_options->addChild( 'retorno', $return );
 
         // Shipping info.
         if ( isset( $order->billing_postcode ) && ! empty( $order->billing_postcode ) ) {
             // Address info
-            $node_client_options->addChild( 'rua', $order->billing_address_1 );
+            $node_client_options->addChild( 'rua' )->addCData( $order->billing_address_1 );
             if ( ! empty( $order->billing_address_2 ) )
-                $node_client_options->addChild( 'complemento', $order->billing_address_2 );
+                $node_client_options->addChild( 'complemento' )->addCData( $order->billing_address_2 );
             $node_client_options->addChild( 'cep', str_replace( array( '-', ' ' ), '', $order->billing_postcode ) );
-            $node_client_options->addChild( 'cidade', $order->billing_city );
+            $node_client_options->addChild( 'cidade' )->addCData( $order->billing_city );
             $node_client_options->addChild( 'estado', $order->billing_state );
         }
 
-        // TODO: precisa melhorar isso para aceitar taxas e descontos.
         if ( sizeof( $order->get_items() ) > 0 ) {
 
             $node_items = $xml->addChild( 'itens' );
@@ -229,7 +226,7 @@ class WC_GerenciaNet_Gateway extends WC_Payment_Gateway {
                     $item_name = substr( sanitize_text_field( $item_name ), 0, 95 );
                     $item_value = $this->format_money( $order->get_item_total( $order_item, false ) );
 
-                    $node_item->addChild( 'descricao', substr( sanitize_text_field( $item_name ), 0, 95 ) );
+                    $node_item->addChild( 'descricao' )->addCData( substr( sanitize_text_field( $item_name ), 0, 95 ) );
                     $node_item->addChild( 'valor', $item_value );
                     $node_item->addChild( 'qtde', $order_item['qty'] );
                 }
@@ -251,7 +248,9 @@ class WC_GerenciaNet_Gateway extends WC_Payment_Gateway {
         $shipping_tax   = $this->format_money( $order->get_shipping_tax() );
         $shipping_total = $shipping_value + $shipping_tax;
 
-        $node_xml_options->addChild( 'frete', $shipping_total );
+        $node_shipping = $node_xml_options->addChild( 'frete' );
+        $node_shipping->addChild( 'tipo', 'fixo' );
+        $node_shipping->addChild( 'pesoOuValor', $shipping_total );
 
         // Discount.
         if ( $order->get_order_discount() > 0 )
@@ -289,9 +288,9 @@ class WC_GerenciaNet_Gateway extends WC_Payment_Gateway {
 
         // Sets the payment url.
         if ( 'yes' == $this->sandbox )
-            $url = $this->dev_boleto;
+            $url = $this->dev_cobranca;
         else
-            $url = $this->prod_boleto;
+            $url = $this->prod_cobranca;
 
         $response = wp_remote_post( $url, $params );
 
@@ -318,26 +317,37 @@ class WC_GerenciaNet_Gateway extends WC_Payment_Gateway {
             } else {
                 $statusErro = $response_data->resposta->erro->status;
 
-                /**
-                 * Cobranca ja foi gerada anteriormente
-                 */
+                // Cobranca ja foi gerada anteriormente
                 if ( 1012 == $statusErro ) {
                     $link = (string) $response_data->resposta->erro->entrada->emitirCobranca->resposta->cobrancasGeradas->cliente->cobranca->link;
                     return $link;
                 }
 
-                /**
-                 * Retorno ja utilizado anteriormente
-                 */
+                // Retorno ja utilizado anteriormente
                 if ( 195 == $statusErro ) {
                     $link = (string) $response_data->resposta->erro->entrada;
                     return $link;
+                }
+
+                // Conta nao possui permissao para emitir com cartao de credito
+                if ( 1106 == $statusErro ) {
+                    // Added error message.
+                    $this->add_error( '<strong>Ger&ecirc;ncianet</strong>: ' . __( 'Favor, entre em contato com o responsável pelo sistema pedindo liberação para compras com cartão de crédito.', 'wcgerencianet' ) );
+
+                    return false;
+                }
+
+                // Email enviado eh invalido
+                if ( 124 == $statusErro ) {
+                    $this->add_error( '<strong>Ger&ecirc;ncianet</strong>: ' . __( 'O email utilizado para gerar a cobrança é inválido.', 'wcgerencianet' ) );
+
+                    return false;
                 }
             }
         }
 
         // Added error message.
-        $this->add_error( '<strong>Ger&ecirc;nciaNet</strong>: ' . __( 'An error has occurred while processing your payment, please try again. Or contact us for assistance.', 'wcgerencianet' ) );
+        $this->add_error( '<strong>Ger&ecirc;ncianet</strong>: ' . __( 'An error has occurred while processing your payment, please try again. Or contact us for assistance.', 'wcgerencianet' ) );
 
         return false;
     }
@@ -373,6 +383,6 @@ class WC_GerenciaNet_Gateway extends WC_Payment_Gateway {
      * @return string Error Mensage.
      */
     public function token_missing_message() {
-        echo '<div class="error"><p><strong>' . __( 'Ger&ecirc;nciaNet Disabled', 'wcgerencianet' ) . '</strong>: ' . sprintf( __( 'You should inform your token. %s', 'wcgerencianet' ), '<a href="' . admin_url( 'admin.php?page=woocommerce_settings&tab=payment_gateways&section=WC_GerenciaNet_Gateway' ) . '">' . __( 'Click here to configure!', 'wcgerencianet' ) . '</a>' ) . '</p></div>';
+        echo '<div class="error"><p><strong>' . __( 'Ger&ecirc;ncianet Disabled', 'wcgerencianet' ) . '</strong>: ' . sprintf( __( 'You should inform your token. %s', 'wcgerencianet' ), '<a href="' . admin_url( 'admin.php?page=woocommerce_settings&tab=payment_gateways&section=WC_GerenciaNet_Gateway' ) . '">' . __( 'Click here to configure!', 'wcgerencianet' ) . '</a>' ) . '</p></div>';
     }
 }
