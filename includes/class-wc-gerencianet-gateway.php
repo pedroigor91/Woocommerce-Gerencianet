@@ -325,8 +325,9 @@ class WC_GerenciaNet_Gateway extends WC_Payment_Gateway {
 
                 // Retorno ja utilizado anteriormente
                 if ( 195 == $statusErro ) {
-                    $link = (string) $response_data->resposta->erro->entrada;
-                    return $link;
+                    $this->add_error( '<strong>Ger&ecirc;ncianet</strong>: ' . __( 'Já foi gerado uma cobrança com este número de pedido. Favor avisar ao responsável pelo sistema.', 'wcgerencianet' ) );
+
+                    return false;
                 }
 
                 // Conta nao possui permissao para emitir com cartao de credito
