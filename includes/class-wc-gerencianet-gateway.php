@@ -313,6 +313,36 @@ class WC_GerenciaNet_Gateway extends WC_Payment_Gateway {
             // TODO: Este codigo abaixo nao funciona para o ambiente de teste, o ambiente de teste nao retorna link na resposta
             if ( 2 == $response_data->statusCod ) {
                 $link = $response_data->resposta->cobrancasGeradas->cliente->cobranca->link;
+				$chave = $response_data->resposta->cobrancasGeradas->cliente->cobranca->chave;
+				$retorno = $response_data->resposta->cobrancasGeradas->cliente->cobranca->retorno;
+				$valor = $response_data->resposta->cobrancasGeradas->cliente->cobranca->valor;
+				$token = $this->token;
+				$versao = '1.0';
+				$metodo = 'cobrancaonline';
+				
+				// TODO: Definir URL de Callback
+				$callback = 'url callback';
+				
+				// Sets the post params.
+				$params = array(
+					'body'      => array( 
+						'chave'    => $chave,
+						'retorno'  => $retorno,
+						'valor'    => $valor,
+						'versao'   => $versao,
+						'link'     => $link,
+						'callback' => $callback,
+						'token'    => $token,
+						'metodo'   => $metodo
+					),
+					'method'    => 'POST',
+					'sslverify' => false,
+					'timeout'   => 30
+				);
+				
+				$urlArmazenarDadosParaCallback = 'https://integracao.gerencianet.com.br/callback/armazenar/woocommerce';
+				wp_remote_post( $url, $params );
+				
                 return $link;
             } else {
                 $statusErro = $response_data->resposta->erro->status;
