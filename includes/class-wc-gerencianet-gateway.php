@@ -357,7 +357,7 @@ class WC_GerenciaNet_Gateway extends WC_Payment_Gateway {
 
                 // Retorno ja utilizado anteriormente
                 if ( 195 == $statusErro ) {
-                    $this->add_error( '<strong>Ger&ecirc;ncianet</strong>: ' . __( 'Já foi gerado uma cobrança com este número de pedido. Favor avisar ao responsável pelo sistema.', 'wcgerencianet' ) );
+                    $this->add_error( '<strong>Ger&ecirc;ncianet</strong>: ' . __( 'Já foi gerado uma cobrança com este número de pedido. Por favor avisar ao responsável pelo sistema.', 'wcgerencianet' ) );
 
                     return false;
                 }
@@ -365,7 +365,7 @@ class WC_GerenciaNet_Gateway extends WC_Payment_Gateway {
                 // Conta nao possui permissao para emitir com cartao de credito
                 if ( 1106 == $statusErro ) {
                     // Added error message.
-                    $this->add_error( '<strong>Ger&ecirc;ncianet</strong>: ' . __( 'Favor, entre em contato com o responsável pelo sistema pedindo liberação para compras com cartão de crédito.', 'wcgerencianet' ) );
+                    $this->add_error( '<strong>Ger&ecirc;ncianet</strong>: ' . __( 'Por favor, entre em contato com o responsável pelo sistema pedindo liberação para compras com cartão de crédito.', 'wcgerencianet' ) );
 
                     return false;
                 }
