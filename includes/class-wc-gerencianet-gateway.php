@@ -321,7 +321,7 @@ class WC_GerenciaNet_Gateway extends WC_Payment_Gateway {
 				$metodo = 'cobrancaonline';
 				
 				// TODO: Definir URL de Callback
-				$callback = 'url callback';
+				$callback = 'http://www.meusite.com.br/wc-api/WC_GerenciaNet_Gateway';
 				
 				// Sets the post params.
 				$params = array(
