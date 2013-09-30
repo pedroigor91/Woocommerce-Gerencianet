@@ -322,6 +322,8 @@ class WC_GerenciaNet_Gateway extends WC_Payment_Gateway {
 				
 				// TODO: Definir URL de Callback
 				$callback = str_replace( 'https:', 'http:', add_query_arg( 'wc-api', 'WC_GerenciaNet_Gateway', home_url( '/' ) ) );
+
+                add_action( 'woocommerce_api_wc_gerencianet_gateway', $callback );
 				
 				// Sets the post params.
 				$params = array(
