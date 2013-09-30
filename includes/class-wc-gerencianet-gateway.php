@@ -321,9 +321,7 @@ class WC_GerenciaNet_Gateway extends WC_Payment_Gateway {
 				$metodo = 'cobrancaonline';
 				
 				// TODO: Definir URL de Callback
-				$callback = str_replace( 'https:', 'http:', add_query_arg( 'wc-api', 'WC_GerenciaNet_Gateway', home_url( '/' ) ) );
-
-                add_action( 'woocommerce_api_wc_gerencianet_gateway', $callback );
+				//$callback = str_replace( 'https:', 'http:', add_query_arg( 'wc-api', 'WC_GerenciaNet_Gateway', home_url( '/' ) ) );
 				
 				// Sets the post params.
 				$params = array(
@@ -410,7 +408,11 @@ class WC_GerenciaNet_Gateway extends WC_Payment_Gateway {
                 'redirect' => esc_url_raw( $url )
             );
         }
+
+
     }
+
+
 
     /**
      * Adds error message when not configured the token.
