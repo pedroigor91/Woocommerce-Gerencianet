@@ -336,6 +336,10 @@ class WC_Gerencianet_Gateway extends WC_Payment_Gateway {
                 $urlArmazenarDadosParaCallback = 'https://integracao.gerencianet.com.br/callback/armazenar/woocommerce';
                 if ( 'yes' != $this->sandbox ) {
                     wp_remote_post( $urlArmazenarDadosParaCallback, $params );
+                } else {
+                    $woocommerce->add_message( '<strong>Ger&ecirc;ncianet</strong>: ' . __( 'Dados validados em nosso ambiente de testes. Utilize o ambiente de produção para uma emissão real.' ) );
+
+                    return false;
                 }
 
                 return $link;
