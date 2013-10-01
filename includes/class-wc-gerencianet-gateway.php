@@ -362,14 +362,6 @@ class WC_GerenciaNet_Gateway extends WC_Payment_Gateway {
                     return false;
                 }
 
-                // Conta nao possui permissao para emitir com cartao de credito
-                if ( 1106 == $statusErro ) {
-                    // Added error message.
-                    $this->add_error( '<strong>Ger&ecirc;ncianet</strong>: ' . __( 'Por favor, entre em contato com o responsável pelo sistema pedindo liberação para compras com cartão de crédito.', 'wcgerencianet' ) );
-
-                    return false;
-                }
-
                 // Email enviado eh invalido
                 if ( 124 == $statusErro ) {
                     $this->add_error( '<strong>Ger&ecirc;ncianet</strong>: ' . __( 'O email utilizado para gerar a cobrança é inválido.', 'wcgerencianet' ) );
