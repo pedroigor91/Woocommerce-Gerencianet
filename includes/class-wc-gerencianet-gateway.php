@@ -314,8 +314,6 @@ class WC_Gerencianet_Gateway extends WC_Payment_Gateway {
                 $token = $this->token;
                 $versao = '1.0';
                 $metodo = 'cobrancaonline';
-
-                // TODO: Definir URL de Callback
                 $callback = str_replace( 'https:', 'http:', add_query_arg( 'wc-api', 'WC_Gerencianet_Gateway', home_url( '/' ) ) );
 
                 // Sets the post params.
