@@ -398,9 +398,6 @@ class WC_Gerencianet_Gateway extends WC_Payment_Gateway {
 
 
     }
-
-
-
     /**
      * Adds error message when not configured the token.
      *
@@ -408,5 +405,53 @@ class WC_Gerencianet_Gateway extends WC_Payment_Gateway {
      */
     public function token_missing_message() {
         echo '<div class="error"><p><strong>' . __( 'Ger&ecirc;ncianet Disabled', 'wcgerencianet' ) . '</strong>: ' . sprintf( __( 'You should inform your token. %s', 'wcgerencianet' ), '<a href="' . admin_url( 'admin.php?page=woocommerce_settings&tab=payment_gateways&section=WC_Gerencianet_Gateway' ) . '">' . __( 'Click here to configure!', 'wcgerencianet' ) . '</a>' ) . '</p></div>';
+    }
+
+    /**
+     * Process the IPN.
+     *
+     * @return bool
+     */
+    public function process_ipn_request( $data ) {
+
+        if ( 'yes' == $this->debug )
+            $this->log->add( 'gerencianet', 'Checking IPN request...' );
+
+        $token    = $data['token'];
+        $order_id = $data['orderId'];
+
+        // Valid if sent token is configured on WC
+        if ($this->token != $token) {
+            if ( 'yes' == $this->debug )
+                $this->log->add( 'gerencianet', 'Invalid token request.' );
+
+            return false;
+        }
+
+        $order = new WC_Order( $order_id );
+
+        $order->add_order_note( __( 'Ger&ecirc;ncianet: Payment completed and credited to your account.', 'wcgerencianet' ) );
+
+        // Changing the order for processing and reduces the stock.
+        $order->payment_complete();
+
+        return true;
+    }
+
+    /**
+     * Check API Response.
+     *
+     * @return void
+     */
+    public function check_ipn_response() {
+        @ob_clean();
+
+        $ipn = $this->process_ipn_request( $_POST );
+
+        if ( $ipn ) {
+            echo '200';
+        } else {
+            wp_die( __( 'Ger&ecirc;ncianet Request Failure', 'wcgerencianet' ) );
+        }
     }
 }
