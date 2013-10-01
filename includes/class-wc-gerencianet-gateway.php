@@ -1,12 +1,12 @@
 <?php
 /**
- * WC_GerenciaNet_Gateway Gateway Class.
+ * WC_Gerencianet_Gateway Gateway Class.
  *
- * Built the GerenciaNet method.
+ * Built the Gerencianet method.
  *
- * @since 0.0.1
+ * @since 1.0.0
  */
-class WC_GerenciaNet_Gateway extends WC_Payment_Gateway {
+class WC_Gerencianet_Gateway extends WC_Payment_Gateway {
 
     /**
      * Constructor for the gateway.
@@ -35,7 +35,6 @@ class WC_GerenciaNet_Gateway extends WC_Payment_Gateway {
         $this->title          = $this->get_option( 'title' );
         $this->description    = $this->get_option( 'description' );
         $this->token          = $this->get_option( 'token' );
-        $this->invoice_prefix = $this->get_option( 'invoice_prefix' );
         $this->sandbox        = $this->get_option( 'sandbox' );
         $this->debug          = $this->get_option( 'debug' );
 
@@ -111,20 +110,13 @@ class WC_GerenciaNet_Gateway extends WC_Payment_Gateway {
                 'title' => __( 'Description', 'wcgerencianet' ),
                 'type' => 'textarea',
                 'description' => __( 'This controls the description which the user sees during checkout.', 'wcgerencianet' ),
-                'default' => __( 'Pay via Ger&ecirc;ncianet', 'wcgerencianet' )
+                'default' => __( 'Pay with Ger&ecirc;ncianet', 'wcgerencianet' )
             ),
             'token' => array(
                 'title' => __( 'Ger&ecirc;ncianet Token', 'wcgerencianet' ),
                 'type' => 'text',
                 'description' => __( 'Please enter your Ger&ecirc;ncianet token. This is needed to process the payment and notifications', 'wcgerencianet' ),
                 'default' => ''
-            ),
-            'invoice_prefix' => array(
-                'title' => __( 'Invoice Prefix', 'wcgerencianet' ),
-                'type' => 'text',
-                'description' => __( 'Please enter a prefix for your invoice numbers. If you use your Ger&ecirc;ncianet account for multiple stores ensure this prefix is unqiue as Ger&ecirc;ncianet will not allow orders with the same invoice number.', 'wcgerencianet' ),
-                'desc_tip' => true,
-                'default' => 'WC-'
             ),
             'testing' => array(
                 'title' => __( 'Gateway Testing', 'wcgerencianet' ),
@@ -183,10 +175,10 @@ class WC_GerenciaNet_Gateway extends WC_Payment_Gateway {
      * @return string        Payment xml.
      */
     protected function generate_payment_xml( $order ) {
-        // Include the WC_GerenciaNet_SimpleXML class.
+        // Include the WC_Gerencianet_SimpleXML class.
         require_once WOO_GERENCIANET_PATH . 'includes/class-wc-gerencianet-simplexml.php';
 
-        $xml = new WC_GerenciaNet_SimpleXML( '<?xml version="1.0" encoding="utf-8"  ?><cobrancaonline></cobrancaonline>' );
+        $xml = new WC_Gerencianet_SimpleXML( '<?xml version="1.0" encoding="utf-8"  ?><cobrancaonline></cobrancaonline>' );
 
         $xml->addChild( 'token', $this->token );
         $node_clients = $xml->addChild( 'clientes' );
@@ -198,6 +190,9 @@ class WC_GerenciaNet_Gateway extends WC_Payment_Gateway {
 
         $node_client_options->addChild( 'nomeRazaoSocial' )->addCData( $order->billing_first_name . ' ' . $order->billing_last_name );
         $node_client_options->addChild( 'retorno', $return );
+
+        $billingPhone = ltrim( $order->billing_phone, '0' );
+        $node_client_options->addChild(  'cel', $billingPhone );
 
         // Shipping info.
         if ( isset( $order->billing_postcode ) && ! empty( $order->billing_postcode ) ) {
@@ -300,7 +295,7 @@ class WC_GerenciaNet_Gateway extends WC_Payment_Gateway {
         } else {
 
             if ( 'yes' == $this->debug )
-                $this->log->add( 'gerencianet', 'Ger&ecirc;nciaNet payment response: ' . print_r( $response, true ) );
+                $this->log->add( 'gerencianet', 'Ger&ecirc;ncianet payment response: ' . print_r( $response, true ) );
 
             $response_data = new SimpleXmlElement( $response['body'], LIBXML_NOCDATA );
 
@@ -312,39 +307,39 @@ class WC_GerenciaNet_Gateway extends WC_Payment_Gateway {
             // TODO: Tratar erros
             // TODO: Este codigo abaixo nao funciona para o ambiente de teste, o ambiente de teste nao retorna link na resposta
             if ( 2 == $response_data->statusCod ) {
-                $link = $response_data->resposta->cobrancasGeradas->cliente->cobranca->link;
-				$chave = $response_data->resposta->cobrancasGeradas->cliente->cobranca->chave;
-				$retorno = $response_data->resposta->cobrancasGeradas->cliente->cobranca->retorno;
-				$valor = $response_data->resposta->cobrancasGeradas->cliente->cobranca->valor;
-				$token = $this->token;
-				$versao = '1.0';
-				$metodo = 'cobrancaonline';
-				
-				// TODO: Definir URL de Callback
-				//$callback = str_replace( 'https:', 'http:', add_query_arg( 'wc-api', 'WC_GerenciaNet_Gateway', home_url( '/' ) ) );
-				
-				// Sets the post params.
-				$params = array(
-					'body'      => array( 
-						'chave'    => $chave,
-						'retorno'  => $retorno,
-						'valor'    => $valor,
-						'versao'   => $versao,
-						'link'     => $link,
-						'callback' => $callback,
-						'token'    => $token,
-						'metodo'   => $metodo
-					),
-					'method'    => 'POST',
-					'sslverify' => false,
-					'timeout'   => 30
-				);
-				
-				$urlArmazenarDadosParaCallback = 'https://integracao.gerencianet.com.br/callback/armazenar/woocommerce';
-				if ( 'yes' != $this->sandbox ) {
-					wp_remote_post( $url, $params );					
-				}
-				
+                $link = (string)$response_data->resposta->cobrancasGeradas->cliente->cobranca->link;
+                $chave = (string)$response_data->resposta->cobrancasGeradas->cliente->cobranca->chave;
+                $retorno = (string)$response_data->resposta->cobrancasGeradas->cliente->cobranca->retorno;
+                $valor = (int)$response_data->resposta->cobrancasGeradas->cliente->cobranca->valor;
+                $token = $this->token;
+                $versao = '1.0';
+                $metodo = 'cobrancaonline';
+
+                // TODO: Definir URL de Callback
+                $callback = str_replace( 'https:', 'http:', add_query_arg( 'wc-api', 'WC_Gerencianet_Gateway', home_url( '/' ) ) );
+
+                // Sets the post params.
+                $params = array(
+                    'body'      => array(
+                        'chave'    => $chave,
+                        'retorno'  => $retorno,
+                        'valor'    => $valor,
+                        'versao'   => $versao,
+                        'link'     => $link,
+                        'callback' => $callback,
+                        'token'    => $token,
+                        'metodo'   => $metodo
+                    ),
+                    'method'    => 'POST',
+                    'sslverify' => false,
+                    'timeout'   => 30
+                );
+
+                $urlArmazenarDadosParaCallback = 'https://integracao.gerencianet.com.br/callback/armazenar/woocommerce';
+                if ( 'yes' != $this->sandbox ) {
+                    wp_remote_post( $urlArmazenarDadosParaCallback, $params );
+                }
+
                 return $link;
             } else {
                 $statusErro = $response_data->resposta->erro->status;
@@ -412,6 +407,6 @@ class WC_GerenciaNet_Gateway extends WC_Payment_Gateway {
      * @return string Error Mensage.
      */
     public function token_missing_message() {
-        echo '<div class="error"><p><strong>' . __( 'Ger&ecirc;ncianet Disabled', 'wcgerencianet' ) . '</strong>: ' . sprintf( __( 'You should inform your token. %s', 'wcgerencianet' ), '<a href="' . admin_url( 'admin.php?page=woocommerce_settings&tab=payment_gateways&section=WC_GerenciaNet_Gateway' ) . '">' . __( 'Click here to configure!', 'wcgerencianet' ) . '</a>' ) . '</p></div>';
+        echo '<div class="error"><p><strong>' . __( 'Ger&ecirc;ncianet Disabled', 'wcgerencianet' ) . '</strong>: ' . sprintf( __( 'You should inform your token. %s', 'wcgerencianet' ), '<a href="' . admin_url( 'admin.php?page=woocommerce_settings&tab=payment_gateways&section=WC_Gerencianet_Gateway' ) . '">' . __( 'Click here to configure!', 'wcgerencianet' ) . '</a>' ) . '</p></div>';
     }
 }

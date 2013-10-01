@@ -4,7 +4,7 @@
  *
  * @since 1.0.0
  */
-class WC_GerenciaNet_SimpleXML extends SimpleXMLElement {
+class WC_Gerencianet_SimpleXML extends SimpleXMLElement {
 
     /**
      * Add CDATA.

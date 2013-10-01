@@ -1,11 +1,11 @@
 <?php
 /**
- * Plugin Name: WooCommerce GerênciaNet Gateway
+ * Plugin Name: WooCommerce Gerêncianet Gateway
  * Plugin URI: https://github.com/pedroigor91/Woocommerce-Gerencianet
  * Description: Gateway de pagamento Gerêncianet para WooCommerce.
- * Author: Pedro Igor, Claudio Sanches, Alessandro
+ * Author: Pedro Igor, Claudio Sanches, Alessandro Alcantara
  * Author URI: https://github.com/pedroigor91/Woocommerce-Gerencianet/
- * Version: 0.0.1
+ * Version: 1.0.0
  * License: GPLv2 or later
  * Text Domain: wcgerencianet
  * Domain Path: /languages/
@@ -46,14 +46,14 @@ function wcgerencianet_gateway_load() {
      * @return array          Payment methods with Ger&ecirc;ncianet.
      */
     function wcgerencianet_add_gateway( $methods ) {
-        $methods[] = 'WC_GerenciaNet_Gateway';
+        $methods[] = 'WC_Gerencianet_Gateway';
 
         return $methods;
     }
 
     add_filter( 'woocommerce_payment_gateways', 'wcgerencianet_add_gateway' );
 
-    // Include the WC_GerenciaNet_Gateway class.
+    // Include the WC_Gerencianet_Gateway class.
     require_once WOO_GERENCIANET_PATH . 'includes/class-wc-gerencianet-gateway.php';
 }
 
@@ -89,7 +89,7 @@ function wcgerencianet_action_links( $links ) {
     $settings = array(
         'settings' => sprintf(
             '<a href="%s">%s</a>',
-            admin_url( 'admin.php?page=woocommerce_settings&tab=payment_gateways&section=WC_GerenciaNet_Gateway' ),
+            admin_url( 'admin.php?page=woocommerce_settings&tab=payment_gateways&section=WC_Gerencianet_Gateway' ),
             __( 'Settings', 'wcgerencianet' )
         )
     );
