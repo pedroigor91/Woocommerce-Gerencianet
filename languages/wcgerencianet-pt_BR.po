@@ -1,0 +1,198 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: WooCommerce Gerêncianet Gateway v1.0.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-10-02 09:18-0300\n"
+"PO-Revision-Date: 2013-10-02 09:21-0300\n"
+"Last-Translator: Pedro Igor <pedro.sampaio@manp.com.br>\n"
+"Language-Team: Pedro Igor\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Poedit 1.5.7\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;"
+"_n_noop:1,2;_c,_nc:4c,1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2\n"
+"X-Poedit-Basepath: ../\n"
+"X-Textdomain-Support: yes\n"
+"X-Poedit-SearchPath-0: .\n"
+
+# @ wcpagseguro
+#: wc-gerencianet.php:21
+#, php-format
+msgid ""
+"WooCommerce Ger&ecirc;ncianet Gateway depends on the last version of %s to "
+"work!"
+msgstr ""
+"WooCommerce Ger&ecirc;ncianet Gateway depende da última versão do %s para "
+"funcionar!"
+
+# @ wcpagseguro
+#: wc-gerencianet.php:93
+msgid "Settings"
+msgstr "Configurações"
+
+# @ wcpagseguro
+#: includes/class-wc-gerencianet-gateway.php:22
+#: includes/class-wc-gerencianet-gateway.php:107
+msgid "Ger&ecirc;ncianet"
+msgstr "Ger&ecirc;ncianet"
+
+# @ wcpagseguro
+#: includes/class-wc-gerencianet-gateway.php:74
+msgid "Ger&ecirc;ncianet standard"
+msgstr "Ger&ecirc;ncianet padrão"
+
+# @ wcpagseguro
+#: includes/class-wc-gerencianet-gateway.php:75
+msgid ""
+"Ger&ecirc;ncianet standard works by sending the user to Ger&ecirc;ncianet to "
+"enter their payment information."
+msgstr ""
+"Ger&ecirc;ncianet padrão funciona enviando o usuário para o site do "
+"Ger&ecirc;ncianet, onde ele irá fazer o pagamento."
+
+# @ wcpagseguro
+#: includes/class-wc-gerencianet-gateway.php:79
+#: includes/class-wc-gerencianet-gateway.php:409
+msgid "Ger&ecirc;ncianet Disabled"
+msgstr "Ger&ecirc;ncianet Desabilitado"
+
+# @ wcpagseguro
+#: includes/class-wc-gerencianet-gateway.php:79
+msgid "Works only with Brazilian Real."
+msgstr "Funciona apenas com Real Brasileiro."
+
+# @ wcpagseguro
+#: includes/class-wc-gerencianet-gateway.php:96
+msgid "Enable/Disable"
+msgstr "Habilita/Desabilita"
+
+# @ wcpagseguro
+#: includes/class-wc-gerencianet-gateway.php:98
+msgid "Enable Ger&ecirc;ncianet standard"
+msgstr "Habilitar Ger&ecirc;ncianet como padrão"
+
+# @ wcpagseguro
+#: includes/class-wc-gerencianet-gateway.php:102
+msgid "Title"
+msgstr "Título"
+
+# @ wcpagseguro
+#: includes/class-wc-gerencianet-gateway.php:104
+msgid "This controls the title which the user sees during checkout."
+msgstr "Isto controla o título que o usuário vê durante o checkout."
+
+# @ wcpagseguro
+#: includes/class-wc-gerencianet-gateway.php:110
+msgid "Description"
+msgstr "Descrição"
+
+# @ wcpagseguro
+#: includes/class-wc-gerencianet-gateway.php:112
+msgid "This controls the description which the user sees during checkout."
+msgstr "Isso controla a descrição que o usuário vê durante o checkout."
+
+# @ wcpagseguro
+#: includes/class-wc-gerencianet-gateway.php:113
+msgid "Pay with Ger&ecirc;ncianet"
+msgstr "Pagar com Ger&ecirc;ncianet"
+
+# @ wcpagseguro
+#: includes/class-wc-gerencianet-gateway.php:116
+msgid "Ger&ecirc;ncianet Token"
+msgstr "Token da Ger&ecirc;ncianet"
+
+# @ wcpagseguro
+#: includes/class-wc-gerencianet-gateway.php:118
+msgid ""
+"Please enter your Ger&ecirc;ncianet token. This is needed to process the "
+"payment and notifications"
+msgstr ""
+"Por favor digite seu token do Ger&ecirc;ncianet. É necessário para processar "
+"o pagamento e as notificações de status da compra. É possível gerar um novo "
+"token %s."
+
+# @ wcpagseguro
+#: includes/class-wc-gerencianet-gateway.php:122
+msgid "Gateway Testing"
+msgstr "Teste de Gateway"
+
+# @ wcpagseguro
+#: includes/class-wc-gerencianet-gateway.php:127
+msgid "Ger&ecirc;ncianet Sandbox"
+msgstr "Ger&ecirc;ncianet Sandbox"
+
+# @ wcpagseguro
+#: includes/class-wc-gerencianet-gateway.php:129
+msgid "Enable Ger&ecirc;ncianet sandbox"
+msgstr "Habilitar Sandbox da Ger&ecirc;ncianet"
+
+#: includes/class-wc-gerencianet-gateway.php:131
+msgid "Ger&ecirc;ncianet sandbox can be used to test payments."
+msgstr "Ger&ecirc;ncianet sandbox pode ser usado para testar os pagamentos."
+
+# @ wcpagseguro
+#: includes/class-wc-gerencianet-gateway.php:134
+msgid "Debug Log"
+msgstr "Log de depuração"
+
+# @ wcpagseguro
+#: includes/class-wc-gerencianet-gateway.php:136
+msgid "Enable logging"
+msgstr "Habilitar log"
+
+# @ wcpagseguro
+#: includes/class-wc-gerencianet-gateway.php:138
+#, php-format
+msgid "Log Ger&ecirc;ncianet events, such as API requests, inside %s"
+msgstr ""
+"Registrar log de eventos do Ger&ecirc;ncianet, como solicitações de API, "
+"dentro do arquivo %s"
+
+#: includes/class-wc-gerencianet-gateway.php:340
+msgid ""
+"Dados validados em nosso ambiente de testes. Utilize o ambiente de produção "
+"para uma emissão real."
+msgstr ""
+
+#: includes/class-wc-gerencianet-gateway.php:357
+msgid ""
+"Já foi gerado uma cobrança com este número de pedido. Por favor avisar ao "
+"responsável pelo sistema."
+msgstr ""
+
+#: includes/class-wc-gerencianet-gateway.php:364
+msgid "O email utilizado para gerar a cobrança é inválido."
+msgstr ""
+
+# @ wcpagseguro
+#: includes/class-wc-gerencianet-gateway.php:372
+msgid ""
+"An error has occurred while processing your payment, please try again. Or "
+"contact us for assistance."
+msgstr ""
+"Um erro ocorreu ao processar o seu pagamento, por favor, tente novamente ou "
+"entre em contato para obter ajuda."
+
+# @ wcpagseguro
+#: includes/class-wc-gerencianet-gateway.php:409
+#, php-format
+msgid "You should inform your token. %s"
+msgstr "Você deve informar o seu token. %s"
+
+# @ wcpagseguro
+#: includes/class-wc-gerencianet-gateway.php:409
+msgid "Click here to configure!"
+msgstr "Clique aqui para configurar!"
+
+# @ wcpagseguro
+#: includes/class-wc-gerencianet-gateway.php:435
+msgid "Ger&ecirc;ncianet: Payment completed and credited to your account."
+msgstr "Ger&ecirc;ncianet: Pagamento concluído e creditado na sua conta."
+
+# @ wcpagseguro
+#: includes/class-wc-gerencianet-gateway.php:456
+msgid "Ger&ecirc;ncianet Request Failure"
+msgstr "Ger&ecirc;ncianet Falha na Requisição"
