@@ -110,7 +110,7 @@ class WC_Gerencianet_Gateway extends WC_Payment_Gateway {
                 'title' => __( 'Description', 'wcgerencianet' ),
                 'type' => 'textarea',
                 'description' => __( 'This controls the description which the user sees during checkout.', 'wcgerencianet' ),
-                'default' => __( 'Pay with Ger&ecirc;ncianet', 'wcgerencianet' )
+                'default' => __( 'Pague com a Ger&ecirc;ncianet', 'wcgerencianet' )
             ),
             'token' => array(
                 'title' => __( 'Ger&ecirc;ncianet Token', 'wcgerencianet' ),
@@ -300,6 +300,7 @@ class WC_Gerencianet_Gateway extends WC_Payment_Gateway {
             $response_data = new SimpleXmlElement( $response['body'], LIBXML_NOCDATA );
 
             /**
+
              * StatusCod 2 - Emissao ocorreu com sucesso
              * StatusCod 1 - Emissao teve erro
              */
@@ -364,6 +365,10 @@ class WC_Gerencianet_Gateway extends WC_Payment_Gateway {
                     $this->add_error( '<strong>Ger&ecirc;ncianet</strong>: ' . __( 'O email utilizado para gerar a cobrança é inválido.', 'wcgerencianet' ) );
 
                     return false;
+                }
+
+                if ( 115 == $statusErro ) {
+                    $this->add_error( '<strong>Ger&ecirc;ncianet</strong>: ' . __( 'O valor do pedido não está no intervalo permitido para emissões usando a Ger&ecirc;ncianet. Por favor avisar ao responsável pelo sistema.' ) );
                 }
             }
         }
