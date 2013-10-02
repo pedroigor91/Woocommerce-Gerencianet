@@ -191,7 +191,7 @@ class WC_Gerencianet_Gateway extends WC_Payment_Gateway {
         $node_client_options->addChild( 'nomeRazaoSocial' )->addCData( $order->billing_first_name . ' ' . $order->billing_last_name );
         $node_client_options->addChild( 'retorno', $return );
 
-        $billingPhone = ereg_replace("[^a-zA-Z0-9_]", "", strtr($order->billing_phone, "áàãâéêíóôõúüçÁÀÃÂÉÊÍÓÔÕÚÜÇ ", "aaaaeeiooouucAAAAEEIOOOUUC_"));
+        $billingPhone = ereg_replace("[^a-zA-Z0-9]", "", strtr($order->billing_phone, "áàãâéêíóôõúüçÁÀÃÂÉÊÍÓÔÕÚÜÇ ", "aaaaeeiooouucAAAAEEIOOOUUC_"));
         $node_client_options->addChild(  'cel', $billingPhone );
 
         // Shipping info.
