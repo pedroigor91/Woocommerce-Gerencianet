@@ -456,7 +456,7 @@ class WC_Gerencianet_Gateway extends WC_Payment_Gateway {
         $ipn = $this->process_ipn_request( $_POST );
 
         if ( $ipn ) {
-            echo '200';
+            exit('200');
         } else {
             wp_die( __( 'Ger&ecirc;ncianet Request Failure', 'wcgerencianet' ) );
         }
